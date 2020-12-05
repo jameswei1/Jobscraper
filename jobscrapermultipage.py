@@ -21,7 +21,7 @@ def scrapepage(pageurl, f):
 			x.div.div.span.text.strip().replace(",", "") 
 			+ "," + x.a.text.strip().replace(",", "")
 			+ "," + x.find("span", {"class":"location"}).text.replace(",", "")
-			+ "," + link
+			+ "," + 'https://ca.indeed.com' + x.a.get('href')
 			+ "\n"
 		)
 
@@ -32,7 +32,6 @@ def scrapepage(pageurl, f):
 	#If next page exists, recursively scrape it
 	if (page_soup.find("a", {"aria-label":next_page})):
 		scrapepage("https://ca.indeed.com" + page_soup.find("a", {"aria-label":next_page}).get('href'), f)
-
 
 #Creates CSV file
 filename = "jobs.csv"
