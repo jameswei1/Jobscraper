@@ -41,7 +41,17 @@ def scrapepageglassdoor(pageurl, g):
 
 	#Scrape page and find containers for job postings
 	page_soup = soup(page_html, "html.parser")
-	
+	article = page_soup.findAll("article", {"id":"MainCol"})
+	jobs = article[0].div.ul.find_all("li")
+
+	for x in jobs:
+		g.write(
+			x.find("a", {"class":"css-10l5u4p e1n63ojh0 jobLink"}).text.replace(",", "")
+			+ "," + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).text.replace(",", "")
+			+ "," + x.find("div", {"class":"d-flex flex-wrap css-yytu5e e1rrn5ka1"}).text.replace(",", "")
+			+ "," + 'https://www.glassdoor.ca' + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).get('href')
+			+ "\n"
+		)
 
 #Creates indeed CSV file
 filenameindeed = "indeedjobs.csv"
@@ -59,7 +69,7 @@ g.write(headers)
 #scrapepageindeed('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f)
 scrapepageglassdoor('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm', g)
 
-f.close()
+# f.close()
 g.close()
 
 # Memory stuff
