@@ -1,6 +1,7 @@
 #works for all pages of one url
 from urllib.request import urlopen as uReq, Request
 from bs4 import BeautifulSoup as soup 
+import threading
 import gc
 import tracemalloc
 
@@ -66,26 +67,37 @@ def scrapepageglassdoor(pageurl, g):
 filenameindeed = "indeedjobs.csv"
 f = open(filenameindeed, "w")
 headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-
-#Creates glassdoor CSV file
-filenameglassdoor = "glassdoorjobs.csv"
-g = open(filenameglassdoor, "w")
-headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-
-
-#Scraoes seed url and next pages
 f.write(headers)
-scrapepageindeed('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f)
-g.write("INTERN POSITIONS\n")
+
+#Creates glassdoor intern CSV file
+filenameglassdoorintern = "glassdoorinternjobs.csv"
+g = open(filenameglassdoorintern, "w")
+headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
 g.write(headers)
-scrapepageglassdoor('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g)
-g.write("\nFULLTIME POSITIONS\n")
-g.write(headers)
-scrapepageglassdoor('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=fulltime', g)
+
+#Creates glassdoor fulltime CSV file
+filenameglassdoorfulltime = "glassdoorfulltimejobs.csv"
+h = open(filenameglassdoorfulltime, "w")
+headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
+h.write(headers)
+
+#Multithreading
+t1 = threading.Thread(target=scrapepageindeed, args=('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f,))
+t2 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g,))
+t3 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=fulltime', h,))
+
+t1.start()
+t2.start()
+t3.start()
+
+t1.join()
+t2.join()
+t3.join()
 
 #Closes file pointers
 f.close()
 g.close()
+h.close()
 
 # Memory stuff
 # gc.collect()
