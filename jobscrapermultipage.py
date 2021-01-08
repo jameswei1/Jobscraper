@@ -3,6 +3,7 @@ from urllib.request import urlopen as uReq, Request
 from bs4 import BeautifulSoup as soup 
 import gc
 import tracemalloc
+
 # tracemalloc.start() #------Memory stuff
 
 def scrapepageindeed(pageurl, f):
@@ -45,31 +46,45 @@ def scrapepageglassdoor(pageurl, g):
 	jobs = article[0].div.ul.find_all("li")
 
 	for x in jobs:
-		g.write(
-			x.find("a", {"class":"css-10l5u4p e1n63ojh0 jobLink"}).text.replace(",", "")
-			+ "," + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).text.replace(",", "")
-			+ "," + x.find("div", {"class":"d-flex flex-wrap css-yytu5e e1rrn5ka1"}).text.replace(",", "")
-			+ "," + 'https://www.glassdoor.ca' + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).get('href')
-			+ "\n"
-		)
+		try:
+			g.write(
+				x.find("a", {"class":"css-10l5u4p e1n63ojh0 jobLink"}).text.replace(",", "")
+				+ "," + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).text.replace(",", "")
+				+ "," + x.find("div", {"class":"d-flex flex-wrap css-yytu5e e1rrn5ka1"}).text.replace(",", "")
+				+ "," + 'htts://www.glassdoor.ca' + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).get('href')
+				+ "\n"
+			)
+		except AttributeError:
+		 	g.write("\nTerminating due to AttributeError\n")
+		 	return
+
+		
+	if (page_soup.find("li", {"class":"next"})):
+		scrapepageglassdoor("https://www.glassdoor.ca" + page_soup.find("li", {"class":"next"}).a.get('href'), g)
 
 #Creates indeed CSV file
 filenameindeed = "indeedjobs.csv"
 f = open(filenameindeed, "w")
 headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-f.write(headers)
 
 #Creates glassdoor CSV file
 filenameglassdoor = "glassdoorjobs.csv"
 g = open(filenameglassdoor, "w")
 headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-g.write(headers)
+
 
 #Scraoes seed url and next pages
-#scrapepageindeed('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f)
-scrapepageglassdoor('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm', g)
+f.write(headers)
+scrapepageindeed('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f)
+g.write("INTERN POSITIONS\n")
+g.write(headers)
+scrapepageglassdoor('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g)
+g.write("\nFULLTIME POSITIONS\n")
+g.write(headers)
+scrapepageglassdoor('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=fulltime', g)
 
-# f.close()
+#Closes file pointers
+f.close()
 g.close()
 
 # Memory stuff
