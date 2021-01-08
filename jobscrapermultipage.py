@@ -51,7 +51,7 @@ def scrapepageglassdoor(pageurl, g):
 			g.write(
 				x.find("a", {"class":"css-10l5u4p e1n63ojh0 jobLink"}).text.replace(",", "")
 				+ "," + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).text.replace(",", "")
-				+ "," + x.find("div", {"class":"d-flex flex-wrap css-yytu5e e1rrn5ka1"}).text.replace(",", "")
+				+ "," + x.find("div", {"class":"d-flex flex-wrap css-yytu5e e1rrn5ka1"}).span.text.replace(",", "")
 				+ "," + 'https://www.glassdoor.ca' + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).get('href')
 				+ "\n"
 			)
@@ -70,34 +70,34 @@ def scrapepageglassdoor(pageurl, g):
 # f.write(headers)
 
 #Creates glassdoor intern CSV file
-filenameglassdoorintern = "glassdoorinternjobs.csv"
-g = open(filenameglassdoorintern, "w")
-headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-g.write(headers)
+# filenameglassdoorintern = "glassdoorinternjobs.csv"
+# g = open(filenameglassdoorintern, "w")
+# headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
+# g.write(headers)
 
 #Creates glassdoor fulltime CSV file
-# filenameglassdoorfulltime = "glassdoorfulltimejobs.csv"
-# h = open(filenameglassdoorfulltime, "w")
-# headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-# h.write(headers)
+filenameglassdoorfulltime = "glassdoorfulltimejobs.csv"
+h = open(filenameglassdoorfulltime, "w")
+headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
+h.write(headers)
 
 #Multithreading
 # t1 = threading.Thread(target=scrapepageindeed, args=('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f,))
-t2 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g,))
-# t3 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=fulltime', h,))
+# t2 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g,))
+t3 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=fulltime', h,))
 
 # t1.start()
-t2.start()
-# t3.start()
+# t2.start()
+t3.start()
 
 # t1.join()
-t2.join()
-# t3.join()
+# t2.join()
+t3.join()
 
 #Closes file pointers
 # f.close()
-g.close()
-# h.close()
+# g.close()
+h.close()
 
 # Memory stuff
 # gc.collect()
