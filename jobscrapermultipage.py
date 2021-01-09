@@ -66,16 +66,16 @@ def scrapepageglassdoor(pageurl, g):
 		scrapepageglassdoor("https://www.glassdoor.ca" + page_soup.find("li", {"class":"next"}).a.get('href'), g)
 
 #Creates indeed CSV file
-# filenameindeed = "indeedjobs.csv"
-# f = open(filenameindeed, "w")
-# headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-# f.write(headers)
+filenameindeed = "indeedjobs.csv"
+f = open(filenameindeed, "w")
+headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
+f.write(headers)
 
 #Creates glassdoor intern CSV file
-# filenameglassdoorintern = "glassdoorinternjobs.csv"
-# g = open(filenameglassdoorintern, "w")
-# headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-# g.write(headers)
+filenameglassdoorintern = "glassdoorinternjobs.csv"
+g = open(filenameglassdoorintern, "w")
+headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
+g.write(headers)
 
 #Creates glassdoor fulltime CSV file
 filenameglassdoorfulltime = "glassdoorfulltimejobs.csv"
@@ -84,21 +84,21 @@ headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
 h.write(headers)
 
 #Multithreading
-# t1 = threading.Thread(target=scrapepageindeed, args=('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f,))
-# t2 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g,))
+t1 = threading.Thread(target=scrapepageindeed, args=('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f,))
+t2 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g,))
 t3 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=fulltime', h,))
 
-# t1.start()
-# t2.start()
+t1.start()
+t2.start()
 t3.start()
 
-# t1.join()
-# t2.join()
+t1.join()
+t2.join()
 t3.join()
 
-#Closes file pointers
-# f.close()
-# g.close()
+# Closes file pointers
+f.close()
+g.close()
 h.close()
 
 # Memory stuff
