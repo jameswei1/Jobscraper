@@ -18,11 +18,12 @@ def scrapepageindeed(pageurl, f):
 	containers = page_soup.findAll("div", {"data-tn-component":"organicJob"})
 
 	for x in containers:
+		link = 'https://ca.indeed.com' + x.a.get('href')
 		f.write(
 			x.div.div.span.text.strip().replace(",", "") 
 			+ "," + x.a.text.strip().replace(",", "")
 			+ "," + x.find("span", {"class":"location"}).text.replace(",", "")
-			+ "," + 'https://ca.indeed.com' + x.a.get('href')
+			+ "," + '=HYPERLINK("' + link + '")'
 			+ "\n"
 		)
 
@@ -48,11 +49,12 @@ def scrapepageglassdoor(pageurl, g):
 
 	for x in jobs:
 		try:
+			link = 'https://www.glassdoor.ca' + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).get('href')
 			g.write(
 				x.find("a", {"class":"css-10l5u4p e1n63ojh0 jobLink"}).text.replace(",", "")
 				+ "," + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).text.replace(",", "")
 				+ "," + x.find("div", {"class":"d-flex flex-wrap css-yytu5e e1rrn5ka1"}).span.text.replace(",", "")
-				+ "," + 'https://www.glassdoor.ca' + x.find("a", {"class":"jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink"}).get('href')
+				+ "," + '=HYPERLINK("' + link + '")'
 				+ "\n"
 			)
 		except AttributeError:
@@ -64,16 +66,16 @@ def scrapepageglassdoor(pageurl, g):
 		scrapepageglassdoor("https://www.glassdoor.ca" + page_soup.find("li", {"class":"next"}).a.get('href'), g)
 
 #Creates indeed CSV file
-filenameindeed = "indeedjobs.csv"
-f = open(filenameindeed, "w")
-headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-f.write(headers)
+# filenameindeed = "indeedjobs.csv"
+# f = open(filenameindeed, "w")
+# headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
+# f.write(headers)
 
 #Creates glassdoor intern CSV file
-filenameglassdoorintern = "glassdoorinternjobs.csv"
-g = open(filenameglassdoorintern, "w")
-headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
-g.write(headers)
+# filenameglassdoorintern = "glassdoorinternjobs.csv"
+# g = open(filenameglassdoorintern, "w")
+# headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
+# g.write(headers)
 
 #Creates glassdoor fulltime CSV file
 filenameglassdoorfulltime = "glassdoorfulltimejobs.csv"
@@ -82,21 +84,21 @@ headers = "Company-Name, Job-Title, Location, Link-To-Apply\n"
 h.write(headers)
 
 #Multithreading
-t1 = threading.Thread(target=scrapepageindeed, args=('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f,))
-t2 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g,))
+# t1 = threading.Thread(target=scrapepageindeed, args=('https://ca.indeed.com/jobs?q=software+developer+co-op&l=Canada', f,))
+# t2 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=internship', g,))
 t3 = threading.Thread(target=scrapepageglassdoor, args=('https://www.glassdoor.ca/Job/software-developer-co-op-jobs-SRCH_KO0,24.htm?jobType=fulltime', h,))
 
-t1.start()
-t2.start()
+# t1.start()
+# t2.start()
 t3.start()
 
-t1.join()
-t2.join()
+# t1.join()
+# t2.join()
 t3.join()
 
 #Closes file pointers
-f.close()
-g.close()
+# f.close()
+# g.close()
 h.close()
 
 # Memory stuff
